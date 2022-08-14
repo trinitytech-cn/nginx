@@ -1,0 +1,83 @@
+server {
+    listen       80;
+    listen  [::]:80;
+    server_name  localhost;
+
+    #access_log  /var/log/nginx/host.access.log  main;
+
+    location / {
+        root   /usr/share/nginx/html;
+{{- if eq (env "N_ENABLE_HISTORY_MODE") "true" }}
+        try_files $uri $uri/ /index.html;
+{{- else }}
+        index  index.html index.htm;
+{{- end }}
+    }
+{{- if eq (env "N_ENABLE_GZIP") "true" }}
+
+    gzip            on;
+    gzip_buffers    32 4K;
+    gzip_comp_level 6;
+    gzip_min_length 1k;
+    gzip_types      text/plain application/javascript application/x-javascript text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png font/ttf font/otf image/svg+xml;
+    gzip_disable    "MSIE [1-6]\.";
+    gzip_vary       on;
+{{- end }}
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+    #
+    #location ~ \.php$ {
+    #    proxy_pass   http://127.0.0.1;
+    #}
+
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    #
+    #location ~ \.php$ {
+    #    root           html;
+    #    fastcgi_pass   127.0.0.1:9000;
+    #    fastcgi_index  index.php;
+    #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+    #    include        fastcgi_params;
+    #}
+
+    # deny access to .htaccess files, if Apache's document root
+    # concurs with nginx's one
+    #
+    #location ~ /\.ht {
+    #    deny  all;
+    #}
+{{- if not (eq (env "N_DISABLE_CACHE") "true") }}
+
+    # cache image
+    location ~* ^.+\.(ico|gif|jpg|jpeg|png)$ {
+        access_log   off;
+        expires      30d;
+    }
+
+    # cache js/css/video
+    location ~* ^.+\.(css|js|txt|xml|swf|wav)$ {
+        access_log   off;
+        expires      24h;
+    }
+
+    # cache html
+    location ~* ^.+\.(html|htm)$ {
+        expires      1h;
+    }
+
+    # cache font
+    location ~* ^.+\.(eot|ttf|otf|woff|svg)$ {
+        access_log   off;
+        expires 30d;
+    }
+{{- end }}
+}
