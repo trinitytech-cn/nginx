@@ -55,29 +55,4 @@ server {
     #location ~ /\.ht {
     #    deny  all;
     #}
-{{- if not (eq (env "N_DISABLE_CACHE") "true") }}
-
-    # cache image
-    location ~* ^.+\.(ico|gif|jpg|jpeg|png)$ {
-        access_log   off;
-        expires      30d;
-    }
-
-    # cache js/css/video
-    location ~* ^.+\.(css|js|txt|xml|swf|wav)$ {
-        access_log   off;
-        expires      24h;
-    }
-
-    # cache html
-    location ~* ^.+\.(html|htm)$ {
-        expires      1h;
-    }
-
-    # cache font
-    location ~* ^.+\.(eot|ttf|otf|woff|svg)$ {
-        access_log   off;
-        expires 30d;
-    }
-{{- end }}
 }

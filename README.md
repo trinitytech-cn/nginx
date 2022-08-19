@@ -18,7 +18,6 @@
 | --------------------- | ------- |
 | N_ENABLE_HISTORY_MODE |         |
 | N_ENABLE_GZIP         |         |
-| N_DISABLE_CACHE       |         |
 
 | Key            | Default                        |
 | -------------- | ------------------------------ |
